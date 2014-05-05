@@ -6,46 +6,39 @@ NAME: mdRefGen.py
 DESCRIPTION
 -----------
 
-Sometimes it is diserable to create a bibliography out of markdown
-references/links and append this to the end of a markdown-file. In a first
-step we are dealing here with numbered references. Later we extend this to
-alphanumeric references.
+Sometimes it is desired to create a bibliography out of markdown references/links and append this to the end of a markdown-file. In a first step we are dealing here with numbered references. Later we extend this to alphanumeric references.
 
 For a markdown-file with numbered references of the form, e.g.:
 
-```
-There are several articles showing how to properly write a grant [[1],[2]].
+    There are several articles showing how to properly write a grant [[1],[2]].
 
-[1]: http://www.ncbi.../PMC1378105/ "Ten Simple Rules for Getting Grants. Bourne PE and Chalupa LM. PLoS Comput Biol. 2006; 2(2)"
-[2]: http://www.blahblahblah.com "This is it!"
-```
-
-Find all those references and append a Biobliography to the document e.g.:
+    [1]: http://www.ncbi.../PMC1378105/ "Ten Simple Rules for Getting Grants. Bourne PE and Chalupa LM. PLoS Comput Biol. 2006; 2(2)"
+    [2]: http://www.blahblahblah.com "This is it!"
 
 
-```
-There are several articles showing how to properly write a grant [[1],[2]].
+Find all those references and append a bibliography to the document e.g.:
 
-[1]: http://www.ncbi.../PMC1378105/ "Ten Simple Rules for Getting Grants. Bourne PE and Chalupa LM. PLoS Comput Biol. 2006; 2(2)"
-[2]: http://www.blahblahblah.com "This is it!"
-##Bibliography
-1. [Ten Simple Rules for Getting Grants. Bourne PE and Chalupa LM. PLoS Comput Biol. 2006; 2(2)] [1]
-2. [This is it!] [2]
-```
+    There are several articles showing how to properly write a grant [[1],[2]].
+
+    [1]: http://www.ncbi.../PMC1378105/ "Ten Simple Rules for Getting Grants. Bourne PE and Chalupa LM. PLoS Comput Biol. 2006; 2(2)"
+    [2]: http://www.blahblahblah.com "This is it!"
+    ##Bibliography
+    1. [Ten Simple Rules for Getting Grants. Bourne PE and Chalupa LM. PLoS Comput Biol. 2006; 2(2)] [1]
+    2. [This is it!] [2]
+
 
 INSTALLATION
 ------------
 
-Generally speaking you only need a working Python intallation.
-This script was developed using Python 2.7.3.
+Generally speaking you only need a working Python installation. This script was developed using Python 2.7.3.
 
 Local install:
-Put this script in the direction where your markdown-files are located
+Put this script in the direction where your markdown-files are located.
 
 Global install:
-Make the script executeable and copy it to a directory that is in your PATH variable (e.g. ~/bin):
+Make the script executable and copy it to a directory that is in your PATH variable (e.g. ~/bin):
 
-```
+```bash
 >chmod u+x mdRefGen.py
 >cp mdRefGene.py ~/bin
 #test
@@ -59,7 +52,7 @@ python mdRefGen.py [-h] [-v] [-o STRING] [-r] [-b] [--noLinks] [--onlyRef] FILE
 
 Examples:
 
-```
+```bash
 # Some simple tests:
 >python mdRefGen.py -h 
 >python mdRefGen.py -r test_numeric.md
@@ -72,13 +65,12 @@ VERSION HISTORY
 ---------------
 
 0.1    2014/05/02    Initial version.
-
 """
 __version__='0.1'
 __date__='2014/05/02'
 __email__='s.schmeier@gmail.com'
 __author__='Sebastian Schmeier'
-import sys, argparse, collections, re
+import sys, argparse, re
 import gzip, bz2, zipfile
 
 def parse_cmdline():
@@ -130,11 +122,17 @@ Copyright %s (%s)''' %(__author__, __email__)
                          action='store_true',
                          default=False,
                          help='If you which a "References" header')
-    oParser.add_argument('-b', '--biobliography',
+    oParser.add_argument('-b', '--bibliography',
                          dest='bBib',
                          action='store_true',
                          default=False,
                          help='If you which a "Bibliography" header')
+    oParser.add_argument('-l', '--level',
+                         metavar='INTEGER',
+                         type=int,
+                         dest='iLevel',
+                         default=2,
+                         help='Header level for the references/bibliography header. [default: "2"]')
     oParser.add_argument('--noLinks',
                          dest='bLinks',
                          action='store_false',
@@ -163,14 +161,16 @@ def load_file(s):
     return oF
 
 def main():
+    ## Parse the command-line
     oArgs, oParser = parse_cmdline()
 
     ## Load the file
     oF = load_file(oArgs.sFile)
 
-    d = collections.OrderedDict()
-    oReg = re.compile('^\[(\d+)\]:\s+(.+)\s+"(.+)"') ## regular expression
-    aLines = oF.readlines() ## load input lines
+    ## Load input lines into list
+    ## Not memory sufficient but if we want to do on the fly printing
+    ## No time to change it at the moment.
+    aLines = oF.readlines() 
     oF.close()
     
     if oArgs.sFile == oArgs.sOut:
@@ -182,19 +182,25 @@ def main():
     else:
         oFout = open(oArgs.sOut, 'w')
 
+    ## Parse line by line.
+    d = {}
+    oReg1 = re.compile('^\[(\d+)\]:\s+(.+)\s+"(.+)"') ## regular expression
     for sLine in aLines:
-        if not oArgs.bOnly and oArgs.sFile != oArgs.sOut:
-            oFout.write(sLine)
-        oRes = oReg.search(sLine)
-        if oRes:
-            d[oRes.group(1)] = (oRes.group(2), oRes.group(3))
+        if not oArgs.bOnly: oFout.write(sLine) ## write original line
+        oRes1 = oReg1.search(sLine) ## search reference
+        if oRes1:
+            d[int(oRes1.group(1))] = (oRes1.group(2), oRes1.group(3))
             
+    ## Header?
     if oArgs.bRef:
-        oFout.write('##References\n')
+        oFout.write('%sReferences\n' %('#' * oArgs.iLevel))
     elif oArgs.bBib:
-        oFout.write('##Bibliography\n')
+        oFout.write('%sBibliography\n'%('#' * oArgs.iLevel))
+    ## Links?
     if oArgs.bLinks:
-        for sID in d:
+        aKeys = d.keys()
+        aKeys.sort()
+        for sID in aKeys:
             oFout.write('%s. [%s] [%s]\n' %(sID, d[sID][1], sID))
     else:
         for sID in d:

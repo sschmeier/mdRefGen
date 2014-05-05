@@ -4,10 +4,7 @@ NAME: mdRefGen.py
 DESCRIPTION
 -----------
 
-Sometimes it is diserable to create a bibliography out of markdown
-references/links and append this to the end of a markdown-file. In a first
-step we are dealing here with numbered references. Later we extend this to
-alphanumeric references.
+Sometimes it is desired to create a bibliography out of markdown references/links and append this to the end of a markdown-file. In a first step we are dealing here with numbered references. Later we extend this to alphanumeric references.
 
 For a markdown-file with numbered references of the form, e.g.:
 
@@ -17,7 +14,7 @@ For a markdown-file with numbered references of the form, e.g.:
     [2]: http://www.blahblahblah.com "This is it!"
 
 
-Find all those references and append a Biobliography to the document e.g.:
+Find all those references and append a bibliography to the document e.g.:
 
     There are several articles showing how to properly write a grant [[1],[2]].
 
@@ -31,14 +28,13 @@ Find all those references and append a Biobliography to the document e.g.:
 INSTALLATION
 ------------
 
-Generally speaking you only need a working Python intallation.
-This script was developed using Python 2.7.3.
+Generally speaking you only need a working Python installation. This script was developed using Python 2.7.3.
 
 Local install:
-Put this script in the direction where your markdown-files are located
+Put this script in the direction where your markdown-files are located.
 
 Global install:
-Make the script executeable and copy it to a directory that is in your PATH variable (e.g. ~/bin):
+Make the script executable and copy it to a directory that is in your PATH variable (e.g. ~/bin):
 
 ```bash
 >chmod u+x mdRefGen.py
