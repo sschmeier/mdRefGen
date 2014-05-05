@@ -6,7 +6,9 @@ NAME: mdRefGen.py
 DESCRIPTION
 -----------
 
-Sometimes it is desired to create a bibliography out of markdown references/links and append this to the end of a markdown-file. In a first step we are dealing here with numbered references. Later we extend this to alphanumeric references.
+Sometimes it is desired to create a bibliography out of markdown references/links and append this to the end of a markdown-file.
+
+###Numerical references
 
 For a markdown-file with numbered references of the form, e.g.:
 
@@ -26,6 +28,28 @@ Find all those references and append a bibliography to the document e.g.:
     1. [Ten Simple Rules for Getting Grants. Bourne PE and Chalupa LM. PLoS Comput Biol. 2006; 2(2)] [1]
     2. [This is it!] [2]
 
+The result is a numbered list.
+
+###Alphanumerical references
+
+For a markdown-file with alphanumerical references of the form, e.g.:
+
+    Here are two good articles outlining 10 important rules to follow for a good grant application and oral presentation [[Bourne and Chalupa 2006],[Bourne 2007]].
+
+    [Bourne and Chalupa 2006]: http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1378105/  "Bourne PE and Chalupa LM. Ten Simple Rules for Getting Grants. PLoS Comput Biol. Feb 2006; 2(2): e12."
+    [Bourne 2007]: http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1857815/ "Bourne PE. Ten Simple Rules for Making Good Oral Presentations. PLoS Comput Biol. Apr 2007; 3(4): e77."
+
+Here we simply sort according to the tags, so the result will be:
+
+    Here are two good articles outlining 10 important rules to follow for a good grant application and oral presentation [[Bourne and Chalupa 2006],[Bourne 2007]].
+
+    [Bourne and Chalupa 2006]: http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1378105/  "Bourne PE and Chalupa LM. Ten Simple Rules for Getting Grants. PLoS Comput Biol. Feb 2006; 2(2): e12."
+    [Bourne 2007]: http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1857815/ "Bourne PE. Ten Simple Rules for Making Good Oral Presentations. PLoS Comput Biol. Apr 2007; 3(4): e77."
+    ##References
+    [Bourne PE. Ten Simple Rules for Making Good Oral Presentations. PLoS Comput Biol. Apr 2007; 3(4): e77.] [Bourne 2007]
+    [Bourne PE and Chalupa LM. Ten Simple Rules for Getting Grants. PLoS Comput Biol. Feb 2006; 2(2): e12.] [Bourne and Chalupa 2006]
+
+This is a first try. This certainly needs improvement, but works for my purposes so far.
 
 INSTALLATION
 ------------
@@ -64,10 +88,11 @@ Examples:
 VERSION HISTORY
 ---------------
 
-0.1    2014/05/02    Initial version.
+* 0.1.2  2004/05/05    Added alphanumerical reference parsing.
+* 0.1    2014/05/02    Initial version.
 """
-__version__='0.1'
-__date__='2014/05/02'
+__version__='0.1.2'
+__date__='2014/05/05'
 __email__='s.schmeier@gmail.com'
 __author__='Sebastian Schmeier'
 import sys, argparse, re

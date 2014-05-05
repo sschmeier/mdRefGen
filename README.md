@@ -86,5 +86,5 @@ Examples:
 VERSION HISTORY
 ---------------
 
-0.1.2 2004/05/05    Added alphanumerical reference parsing.
-0.1    2014/05/02    Initial version.
+* 0.1.2 2004/05/05    Added alphanumerical reference parsing.
+* 0.1    2014/05/02    Initial version.
