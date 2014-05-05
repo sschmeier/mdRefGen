@@ -183,13 +183,18 @@ def main():
         oFout = open(oArgs.sOut, 'w')
 
     ## Parse line by line.
-    d = {}
+    dNum = {}
+    dAlpha = {}
     oReg1 = re.compile('^\[(\d+)\]:\s+(.+)\s+"(.+)"') ## regular expression
+    oReg2 = re.compile('^\[(.+)\]:\s+(.+)\s+"(.+)"')
     for sLine in aLines:
         if not oArgs.bOnly: oFout.write(sLine) ## write original line
         oRes1 = oReg1.search(sLine) ## search reference
+        oRes2 = oReg2.search(sLine) ## search reference
         if oRes1:
-            d[int(oRes1.group(1))] = (oRes1.group(2), oRes1.group(3))
+            dNum[int(oRes1.group(1))] = (oRes1.group(2), oRes1.group(3))
+        elif oRes2:
+            dAlpha[oRes2.group(1)] = (oRes2.group(2), oRes2.group(3))
             
     ## Header?
     if oArgs.bRef:
@@ -198,13 +203,28 @@ def main():
         oFout.write('%sBibliography\n'%('#' * oArgs.iLevel))
     ## Links?
     if oArgs.bLinks:
-        aKeys = d.keys()
-        aKeys.sort()
-        for sID in aKeys:
-            oFout.write('%s. [%s] [%s]\n' %(sID, d[sID][1], sID))
+        if dNum:
+            aKeys = dNum.keys()
+            aKeys.sort()
+            for sID in aKeys:
+                oFout.write('%s. [%s] [%s]\n' %(sID, dNum[sID][1], sID))
+        elif dAlpha:
+            aKeys = dAlpha.keys()
+            aKeys.sort()
+            for sID in aKeys:
+                oFout.write('[%s] [%s]\n' %(dAlpha[sID][1], sID))
+
     else:
-        for sID in d:
-            oFout.write('%s. %s\n' %(sID, d[sID][1]))
+        if dNum:
+            aKeys = dNum.keys()
+            aKeys.sort()
+            for sID in aKeys:
+                oFout.write('%s. %s\n' %(sID, dNum[sID][1]))
+        elif dAlpha:
+            aKeys = dAlpha.keys()
+            aKeys.sort()
+            for sID in aKeys:
+                oFout.write('%s\n' %(dAlpha[sID][1]))
     return
         
 if __name__ == '__main__':
