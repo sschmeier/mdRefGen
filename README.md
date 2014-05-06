@@ -86,5 +86,6 @@ Examples:
 VERSION HISTORY
 ---------------
 
-* 0.1.2 2004/05/05    Added alphanumerical reference parsing.
+* 0.1.3  2014/05/05    Minor bug fix, when writing into the same document
+* 0.1.2  2004/05/05    Added alphanumerical reference parsing.
 * 0.1    2014/05/02    Initial version.

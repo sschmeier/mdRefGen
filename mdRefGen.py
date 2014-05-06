@@ -88,11 +88,12 @@ Examples:
 VERSION HISTORY
 ---------------
 
-* 0.1.2  2004/05/05    Added alphanumerical reference parsing.
+* 0.1.3  2014/05/05    Minor bug fix, when writing into the same document
+* 0.1.2  2014/05/05    Added alphanumerical reference parsing.
 * 0.1    2014/05/02    Initial version.
 """
-__version__='0.1.2'
-__date__='2014/05/05'
+__version__='0.1.3'
+__date__='2014/05/07'
 __email__='s.schmeier@gmail.com'
 __author__='Sebastian Schmeier'
 import sys, argparse, re
@@ -213,7 +214,8 @@ def main():
     oReg1 = re.compile('^\[(\d+)\]:\s+(.+)\s+"(.+)"') ## regular expression
     oReg2 = re.compile('^\[(.+)\]:\s+(.+)\s+"(.+)"')
     for sLine in aLines:
-        if not oArgs.bOnly: oFout.write(sLine) ## write original line
+        if not oArgs.bOnly and oArgs.sFile != oArgs.sOut:
+            oFout.write(sLine) ## write original line
         oRes1 = oReg1.search(sLine) ## search reference
         oRes2 = oReg2.search(sLine) ## search reference
         if oRes1:
